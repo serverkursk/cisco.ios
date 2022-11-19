@@ -38,7 +38,7 @@ class L2_InterfacesArgs(object):
             "elements": "dict",
             "options": {
                 "name": {"type": "str", "required": True},
-                "mode": {"type": "str", "choices": ["access", "trunk"]},
+                "mode": {"type": "str", "choices": ["access", "trunk", "dot1q-tunnel"]},
                 "access": {
                     "type": "dict",
                     "options": {
