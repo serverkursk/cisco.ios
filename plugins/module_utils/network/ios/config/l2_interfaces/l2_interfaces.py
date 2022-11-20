@@ -402,15 +402,31 @@ class L2_Interfaces(ConfigBase):
                                 set(have_allowed_vlans),
                             )
                             allowed_vlans = list(diff) if diff else tuple()
-                    allowed_vlans = ",".join(allowed_vlans)
                     if allowed_vlans:
                         trunk_cmd = (
                             self.trunk_cmds["allowed_vlans_add"]
                             if self.state == "merged" and diff
                             else self.trunk_cmds["allowed_vlans"]
                         )
-                        cmd = trunk_cmd + " {0}".format(allowed_vlans)
-                        add_command_to_config_list(interface, cmd, commands)
+
+                        if len(allowed_vlans) < 10:
+                            allowed_vlans = ",".join(allowed_vlans)
+                            cmd = trunk_cmd + " {0}".format(allowed_vlans)
+                            add_command_to_config_list(interface, cmd, commands)
+                        else:
+                            firt_trunk_cmd = True
+                            allowed_vlans = list(allowed_vlans)
+                            while allowed_vlans:
+                                butch_vlans = allowed_vlans[:10]
+                                del allowed_vlans[:10]
+                                if firt_trunk_cmd:
+                                    cmd = trunk_cmd + " {0}".format(",".join(butch_vlans))
+                                    firt_trunk_cmd = False
+                                else:
+                                    cmd = self.trunk_cmds["allowed_vlans_add"] + " {0}".format(",".join(butch_vlans))
+
+                                add_command_to_config_list(interface, cmd, commands)
+
                 if pruning_vlans and self._check_for_correct_vlan_range(
                     pruning_vlans,
                     module,
