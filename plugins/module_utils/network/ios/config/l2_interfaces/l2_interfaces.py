@@ -409,7 +409,7 @@ class L2_Interfaces(ConfigBase):
                             else self.trunk_cmds["allowed_vlans"]
                         )
 
-                        if len(allowed_vlans) < 10:
+                        if len(allowed_vlans) < 40:
                             allowed_vlans = ",".join(allowed_vlans)
                             cmd = trunk_cmd + " {0}".format(allowed_vlans)
                             add_command_to_config_list(interface, cmd, commands)
@@ -417,13 +417,15 @@ class L2_Interfaces(ConfigBase):
                             firt_trunk_cmd = True
                             allowed_vlans = list(allowed_vlans)
                             while allowed_vlans:
-                                butch_vlans = allowed_vlans[:10]
-                                del allowed_vlans[:10]
+                                butch_vlans = allowed_vlans[:40]
+                                del allowed_vlans[:40]
                                 if firt_trunk_cmd:
                                     cmd = trunk_cmd + " {0}".format(",".join(butch_vlans))
                                     firt_trunk_cmd = False
                                 else:
-                                    cmd = self.trunk_cmds["allowed_vlans_add"] + " {0}".format(",".join(butch_vlans))
+                                    cmd = self.trunk_cmds["allowed_vlans_add"] + " {0}".format(
+                                        ",".join(butch_vlans),
+                                    )
 
                                 add_command_to_config_list(interface, cmd, commands)
 
